@@ -1,0 +1,257 @@
+{
+    "city": {
+        "id": 702550,
+        "name": "Lviv",
+        "coord": {
+            "lon": 24.0232,
+            "lat": 49.8383
+        },
+        "country": "UA",
+        "population": 15000,
+        "timezone": 10800
+    },
+    "cod": "200",
+    "message": 0.0689127,
+    "cnt": 7,
+    "list": [
+        {
+            "dt": 1618308000,
+            "sunrise": 1618284908,
+            "sunset": 1618333996,
+            "temp": {
+                "day": 6.68,
+                "min": 3.24,
+                "max": 11.86,
+                "night": 3.24,
+                "eve": 4.01,
+                "morn": 8.56
+            },
+            "feels_like": {
+                "day": 3.14,
+                "night": 5.65,
+                "eve": 0.37,
+                "morn": 5.65
+            },
+            "pressure": 1020,
+            "humidity": 81,
+            "weather": [
+                {
+                    "id": 804,
+                    "main": "Clouds",
+                    "description": "overcast clouds",
+                    "icon": "04d"
+                }
+            ],
+            "speed": 5.7,
+            "deg": 301,
+            "clouds": 100,
+            "pop": 0.44
+        },
+        {
+            "dt": 1618394400,
+            "sunrise": 1618371184,
+            "sunset": 1618420490,
+            "temp": {
+                "day": 0.51,
+                "min": 0.17,
+                "max": 2.88,
+                "night": 0.21,
+                "eve": 0.27,
+                "morn": 1.72
+            },
+            "feels_like": {
+                "day": -3.97,
+                "night": -1.85,
+                "eve": -4.22,
+                "morn": -1.85
+            },
+            "pressure": 1016,
+            "humidity": 99,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "speed": 4.48,
+            "deg": 315,
+            "clouds": 100,
+            "pop": 1,
+            "rain": 2.86,
+            "snow": 11.91
+        },
+        {
+            "dt": 1618480800,
+            "sunrise": 1618457462,
+            "sunset": 1618506983,
+            "temp": {
+                "day": 0.6,
+                "min": 0.18,
+                "max": 0.9,
+                "night": 0.45,
+                "eve": 0.76,
+                "morn": 0.19
+            },
+            "feels_like": {
+                "day": -3.78,
+                "night": -4.13,
+                "eve": -4.11,
+                "morn": -4.13
+            },
+            "pressure": 1018,
+            "humidity": 99,
+            "weather": [
+                {
+                    "id": 601,
+                    "main": "Snow",
+                    "description": "snow",
+                    "icon": "13d"
+                }
+            ],
+            "speed": 4.35,
+            "deg": 278,
+            "clouds": 100,
+            "pop": 0.95,
+            "snow": 3.7
+        },
+        {
+            "dt": 1618567200,
+            "sunrise": 1618543740,
+            "sunset": 1618593477,
+            "temp": {
+                "day": 0.64,
+                "min": 0.23,
+                "max": 1.28,
+                "night": 1.28,
+                "eve": 1.18,
+                "morn": 0.32
+            },
+            "feels_like": {
+                "day": -5.1,
+                "night": -5.37,
+                "eve": -4.16,
+                "morn": -5.37
+            },
+            "pressure": 1017,
+            "humidity": 99,
+            "weather": [
+                {
+                    "id": 616,
+                    "main": "Snow",
+                    "description": "rain and snow",
+                    "icon": "13d"
+                }
+            ],
+            "speed": 7.02,
+            "deg": 281,
+            "clouds": 100,
+            "pop": 1,
+            "rain": 7.05,
+            "snow": 1.86
+        },
+        {
+            "dt": 1618653600,
+            "sunrise": 1618630019,
+            "sunset": 1618679970,
+            "temp": {
+                "day": 2.17,
+                "min": 1.08,
+                "max": 3.98,
+                "night": 2.69,
+                "eve": 3.98,
+                "morn": 1.16
+            },
+            "feels_like": {
+                "day": -0.46,
+                "night": -3.09,
+                "eve": 3.98,
+                "morn": -3.09
+            },
+            "pressure": 1019,
+            "humidity": 99,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 2.51,
+            "deg": 259,
+            "clouds": 100,
+            "pop": 0.86,
+            "rain": 1.83
+        },
+        {
+            "dt": 1618740000,
+            "sunrise": 1618716299,
+            "sunset": 1618766463,
+            "temp": {
+                "day": 5.41,
+                "min": 1.64,
+                "max": 7.38,
+                "night": 5.76,
+                "eve": 6.93,
+                "morn": 1.64
+            },
+            "feels_like": {
+                "day": 2.06,
+                "night": -0.6,
+                "eve": 3.75,
+                "morn": -0.6
+            },
+            "pressure": 1020,
+            "humidity": 92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 4.57,
+            "deg": 106,
+            "clouds": 100,
+            "pop": 1,
+            "rain": 3.2
+        },
+        {
+            "dt": 1618826400,
+            "sunrise": 1618802580,
+            "sunset": 1618852957,
+            "temp": {
+                "day": 7.36,
+                "min": 5.74,
+                "max": 7.95,
+                "night": 7.95,
+                "eve": 7.73,
+                "morn": 5.86
+            },
+            "feels_like": {
+                "day": 3.79,
+                "night": 3.44,
+                "eve": 3.86,
+                "morn": 3.44
+            },
+            "pressure": 1018,
+            "humidity": 92,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 6.29,
+            "deg": 100,
+            "clouds": 100,
+            "pop": 0.64,
+            "rain": 1.81
+        }
+    ]
+}

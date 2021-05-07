@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<!-- <flow name="weatherFlow" doc:id="dd335181-0f03-4ed4-a850-38c8a3fd56f3" >
+		<error-handler ref="weather-infoError_Handler" />
+	</flow>-->
+	<sub-flow name="weather-subflow" doc:id="d94fca40-98c1-4bed-ae44-1e756daef4f5" >
+		<http:request method="GET" doc:name="GET/rapidapi.com/weather" doc:id="7c989177-f8d2-43a0-a011-6f266b2e9037" config-ref="HTTP_Request_configuration" path="/weather">
+			<error-mapping targetType="APP:NOT_FOUND" sourceType="HTTP:NOT_FOUND" />
+			<error-mapping sourceType="HTTP:TOO_MANY_REQUESTS" targetType="APP:TOO_MANY_REQUESTS" />
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"x-rapidapi-key" : "367da360a2mshe99c6313e5c1f4dp121921jsn97b4c767bdf0",
+	"x-rapidapi-host" : "community-open-weather-map.p.rapidapi.com"
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"q" : attributes.queryParams.'nextLocation',
+	"units" : "metric"
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="a6827565-c602-4ae8-84c1-96f9bbd20f99">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var timeZoneAsStr = if(payload.timezone<0)
+    "-" ++ (24-(payload.timezone as DateTime).hour) as String ++ ":00:00"
+  else
+    "+" ++ payload.timezone as DateTime as Time as String
+---
+{
+	id: payload.weather.id[0],
+	location: (payload.name default "") ++ ", " ++ payload.sys.country,	
+	date: (payload.dt+payload.timezone) as DateTime,
+	timezone: timeZoneAsStr,
+	description: payload.weather.description[0],
+	temperature: payload.main.temp,
+	feels_like: payload.main.feels_like,
+	min_temperature: payload.main.temp_min,
+	max_temperature: payload.main.temp_max,
+	pressure: payload.main.pressure,
+	humidity: payload.main.humidity,
+	wind_speed: payload.wind.speed,
+	clouds: payload.clouds.all,
+	sunrise: (payload.sys.sunrise+payload.timezone) as DateTime as Time,
+	sunset: (payload.sys.sunset+payload.timezone) as DateTime as Time
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<!--<flow name="forecastFlow" doc:id="fdd2507e-1322-44bd-a0b1-d5033ee4db64" >
+		<error-handler ref="weather-infoError_Handler" />
+	</flow>-->
+	<sub-flow name="forecast-subflow" doc:id="5e53cf11-edc0-40e6-bc4e-09869e73d24c" >
+		<set-variable value='#[{&#10;	period: attributes.queryParams.period default 5,&#10;	interval: attributes.queryParams.interval default "daily"&#10;}]' doc:name="Set Variable" doc:id="a5055a82-967f-4c35-b424-92c9d40aed90" variableName="forecastProperties" />
+		<choice doc:name="Choice" doc:id="28c9958f-a7f3-4438-9adb-d6a57f9b0f73">
+			<when expression='#[vars.forecastProperties.period &lt;= 5 and not vars.forecastProperties.interval=="daily"]'>
+				<http:request method="GET" doc:name="GET/rapidapi.com/forecast" doc:id="8986f8fb-4f6e-4d98-9dc2-d6c1aebd8b2d" config-ref="HTTP_Request_configuration" path="/forecast">
+					<error-mapping sourceType="HTTP:NOT_FOUND" targetType="APP:NOT_FOUND" />
+					<error-mapping sourceType="HTTP:TOO_MANY_REQUESTS" targetType="APP:TOO_MANY_REQUESTS" />
+					<http:headers><![CDATA[#[output application/java
+---
+{
+	"x-rapidapi-key" : "367da360a2mshe99c6313e5c1f4dp121921jsn97b4c767bdf0",
+	"x-rapidapi-host" : "community-open-weather-map.p.rapidapi.com"
+}]]]></http:headers>
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"q" : attributes.queryParams."nextLocation",
+	"cnt" : vars.forecastProperties.period as Number *8,
+	"units" : "metric"
+}]]]></http:query-params>
+				</http:request>
+				<ee:transform doc:name="Transform Message" doc:id="f2a7491a-9ad8-48d9-90ad-6bebb8284bdc">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var forecastInterval=
+  if(vars.forecastProperties.interval=="6_hours")
+  	2
+  else
+  	1
+var timeZoneAsStr = 
+  if((payload.city.timezone as Number) <0)    
+    "-" ++ (24-(payload.city.timezone as DateTime).hour) as String ++ ":00:00"
+  else
+    "+" ++ payload.city.timezone as DateTime as Time as String
+---
+{
+	location: (payload.city.namedefault "") ++ ", " ++ payload.city.country,	
+	sunrise: (payload.city.sunrise+payload.city.timezone) as DateTime as Time,
+	sunset: (payload.city.sunset+payload.city.timezone) as DateTime as Time,
+	timezone: timeZoneAsStr,
+	forecasts: payload.list map ((list,index) -> do{
+		if(mod(index,forecastInterval) == 0){
+		  id: list.weather.id[0],
+	      date: (list.dt+payload.city.timezone) as DateTime,
+	      description: list.weather.description[0],
+	      temperature: list.main.temp,
+	      feels_like: list.main.feels_like,
+	      min_temperature: list.main.temp_min,
+	      max_temperature: list.main.temp_max,
+	      pressure: list.main.pressure,
+	      humidity: list.main.humidity,
+	      wind_speed: list.wind.speed,
+	      clouds: list.clouds.all
+	    } else
+	    null 	   
+	}) filter ($!=null)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<http:request method="GET" doc:name="GET/rapidapi.com/forecast/daily" doc:id="32df515c-3f7c-4855-b606-889cbcdca1df" path="/forecast/daily" config-ref="HTTP_Request_configuration">
+					<error-mapping targetType="APP:NOT_FOUND" sourceType="HTTP:NOT_FOUND" />
+					<error-mapping targetType="APP:TOO_MANY_REQUESTS" />
+					<http:headers><![CDATA[#[output application/java
+---
+{
+	"x-rapidapi-key" : "367da360a2mshe99c6313e5c1f4dp121921jsn97b4c767bdf0",
+	"x-rapidapi-host" : "community-open-weather-map.p.rapidapi.com"
+}]]]></http:headers>
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"q" : attributes.queryParams."nextLocation",
+	"cnt" : vars.forecastProperties.period,
+	"units" : "metric"
+}]]]></http:query-params>
+				</http:request>
+				<ee:transform doc:name="Transform Message" doc:id="f88eb581-73af-45aa-a909-89608e0527e3">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var timeZoneAsStr = if(payload.city.timezone<0)
+    "-" ++ (24-(payload.city.timezone as DateTime).hour) as String ++ ":00:00"
+  else
+    "+" ++ payload.city.timezone as DateTime as Time as String
+---
+{
+	location: payload.city.name ++ ", " ++ payload.city.country,
+	timezone: timeZoneAsStr,	
+	forecasts: payload.list map ( list , indexOfList ) -> {
+		id: list.weather.id[0],
+		date: (list.dt+payload.city.timezone) as DateTime,
+		description: list.weather.description[0],
+		temperature: list.temp.day,
+		feels_like: list.feels_like.day,
+		min_temperature: list.temp.min,
+		max_temperature: list.temp.max,
+		pressure: list.pressure,
+		humidity: list.humidity,
+		wind_speed: list.speed,
+		clouds: list.clouds,
+		sunrise: (list.sunrise+payload.city.timezone) as DateTime as Time,
+	    sunset: (list.sunset+payload.city.timezone) as DateTime as Time	
+	}
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="9cad2316-deb3-4775-883d-6795ffc0ff1d" message='#[if(vars.forecastProperties.period&gt;5 and not vars.forecastProperties.interval=="daily")&#10;	"Warning:Hourly forecasts are available only for periods of up to 5 days"&#10;else&#10;    "Application finished successfully"]' />
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<error-handler name="weather-infoError_Handler" doc:id="5675e41a-c20d-4e87-94af-83125298b037" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="825924d2-6701-4565-b1e0-44066fc53d37" type="APP:NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="173d5075-52be-4f57-a2c4-e43fd1298de5" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	messsage: "Location not found"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="404" doc:name="Set Variable" doc:id="2715fd3f-e2fa-4dc8-8c0e-fe2b5d12335e" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0ac1e01a-c3df-4488-8a7a-8c18b394882a" type="APP:TOO_MANY_REQUESTS">
+			<ee:transform doc:name="Transform Message" doc:id="765efc1d-2e9e-4a9d-b984-f5a9ebb296a9" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Too many requests"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="429" doc:name="Set Variable" doc:id="6a01cd2f-8a26-407a-8b2f-f93ecc38d43c" variableName="httpStatus"/>
+		</on-error-propagate>
+	</error-handler>
+</mule>

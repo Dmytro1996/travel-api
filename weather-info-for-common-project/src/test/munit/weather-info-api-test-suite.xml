@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="weather-info-api-test-suite.xml" />
+	<munit:test name="GET-weather_Test_Is_not_null" doc:id="4533ef1d-c534-449b-8216-5f312e9d47cc" description="Test">
+		<munit:behavior>
+			<flow-ref doc:name="mock_request_weather" doc:id="38e3721b-2c6e-4526-99e8-2e3e5a062720" name="mock_request_weather"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="23495b9a-65ef-40f1-921a-df1a62bb0c5b" name="setEventFlow" />
+			<flow-ref doc:name="Flow-ref to get:\weather:weather-info-api-config" doc:id="f3394032-1a63-48ff-a261-93d751c391e1" name="get:\weather:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is not null" doc:id="7ff83bf2-f959-4f4e-993f-5f90d84b72bf" expression="#[payload]" is="#[MunitTools::notNullValue()]" message="Response should not be null"/>
+		</munit:validation>
+	</munit:test>
+	<flow name="mock_request_weather" doc:id="4cbea2ad-13ad-474f-9294-71b35319efd2" >
+		<munit-tools:mock-when doc:name="Mock when" doc:id="c27e3e9a-cf93-42e8-b501-150a1830b769" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="GET/rapidapi.com/weather" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7c989177-f8d2-43a0-a011-6f266b2e9037" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/weather" attributeName="path" />
+				</munit-tools:with-attributes>
+			<munit-tools:then-return >
+				<munit-tools:payload value='#[{&#10;    "coord": {&#10;        "lon": 24.0232,&#10;        "lat": 49.8383&#10;    },&#10;    "weather": [&#10;        {&#10;            "id": 803,&#10;            "main": "Clouds",&#10;            "description": "broken clouds",&#10;            "icon": "04d"&#10;        }&#10;    ],&#10;    "base": "stations",&#10;    "main": {&#10;        "temp": 278.93,&#10;        "feels_like": 275.46,&#10;        "temp_min": 278.71,&#10;        "temp_max": 279.15,&#10;        "pressure": 1020,&#10;        "humidity": 87&#10;    },&#10;    "visibility": 9000,&#10;    "wind": {&#10;        "speed": 5,&#10;        "deg": 300&#10;    },&#10;    "clouds": {&#10;        "all": 75&#10;    },&#10;    "dt": 1618306873,&#10;    "sys": {&#10;        "type": 1,&#10;        "id": 8909,&#10;        "country": "UA",&#10;        "sunrise": 1618284908,&#10;        "sunset": 1618333996&#10;    },&#10;    "timezone": 10800,&#10;    "id": 702550,&#10;    "name": "Lviv",&#10;    "cod": 200&#10;}]' mediaType="application/java" encoding="UTF-8" />
+			</munit-tools:then-return>
+			</munit-tools:mock-when>
+	</flow>
+	<flow name="mock_request_forecst_5_days" doc:id="4aff1962-c2e8-47b4-ac1f-1e8f076cd03d" >
+		<munit-tools:mock-when doc:name="Mock when" doc:id="7b438c2a-02ca-4a8b-80d2-bc4bbab3fbbf" processor="http:request">
+			<munit-tools:with-attributes >
+				<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+				<munit-tools:with-attribute whereValue="GET/rapidapi.com/forecast" attributeName="doc:name" />
+				<munit-tools:with-attribute whereValue="8986f8fb-4f6e-4d98-9dc2-d6c1aebd8b2d" attributeName="doc:id" />
+				<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				<munit-tools:with-attribute whereValue="/forecast" attributeName="path" />
+			</munit-tools:with-attributes>
+			<munit-tools:then-return >
+				<munit-tools:payload value='#[&#10;{&#10;    "cod": "200",&#10;    "message": 0,&#10;    "cnt": 18,&#10;    "list": [&#10;        {&#10;            "dt": 1618336800,&#10;            "main": {&#10;                "temp": 3.95,&#10;                "feels_like": 0.64,&#10;                "temp_min": 3.32,&#10;                "temp_max": 3.95,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 984,&#10;                "humidity": 87,&#10;                "temp_kf": 0.63&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 804,&#10;                    "main": "Clouds",&#10;                    "description": "overcast clouds",&#10;                    "icon": "04n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 90&#10;            },&#10;            "wind": {&#10;                "speed": 3.89,&#10;                "deg": 329&#10;            },&#10;            "visibility": 10000,&#10;            "pop": 0.28,&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-13 18:00:00"&#10;        },&#10;        {&#10;            "dt": 1618347600,&#10;            "main": {&#10;                "temp": 3.5,&#10;                "feels_like": 0.33,&#10;                "temp_min": 2.61,&#10;                "temp_max": 3.5,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 983,&#10;                "humidity": 89,&#10;                "temp_kf": 0.89&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 804,&#10;                    "main": "Clouds",&#10;                    "description": "overcast clouds",&#10;                    "icon": "04n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 93&#10;            },&#10;            "wind": {&#10;                "speed": 3.51,&#10;                "deg": 339&#10;            },&#10;            "visibility": 10000,&#10;            "pop": 0.4,&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-13 21:00:00"&#10;        },&#10;        {&#10;            "dt": 1618358400,&#10;            "main": {&#10;                "temp": 2.86,&#10;                "feels_like": -0.43,&#10;                "temp_min": 2.31,&#10;                "temp_max": 2.86,&#10;                "pressure": 1017,&#10;                "sea_level": 1017,&#10;                "grnd_level": 981,&#10;                "humidity": 93,&#10;                "temp_kf": 0.55&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 804,&#10;                    "main": "Clouds",&#10;                    "description": "overcast clouds",&#10;                    "icon": "04n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 97&#10;            },&#10;            "wind": {&#10;                "speed": 3.49,&#10;                "deg": 346&#10;            },&#10;            "visibility": 2984,&#10;            "pop": 0.41,&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-14 00:00:00"&#10;        },&#10;        {&#10;            "dt": 1618369200,&#10;            "main": {&#10;                "temp": 1.96,&#10;                "feels_like": -1.46,&#10;                "temp_min": 1.96,&#10;                "temp_max": 1.96,&#10;                "pressure": 1015,&#10;                "sea_level": 1015,&#10;                "grnd_level": 980,&#10;                "humidity": 97,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 3.4,&#10;                "deg": 325&#10;            },&#10;            "visibility": 192,&#10;            "pop": 0.66,&#10;            "snow": {&#10;                "3h": 0.55&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-14 03:00:00"&#10;        },&#10;        {&#10;            "dt": 1618380000,&#10;            "main": {&#10;                "temp": 1,&#10;                "feels_like": -2.88,&#10;                "temp_min": 1,&#10;                "temp_max": 1,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 980,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 3.74,&#10;                "deg": 315&#10;            },&#10;            "visibility": 27,&#10;            "pop": 0.92,&#10;            "snow": {&#10;                "3h": 3.67&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-14 06:00:00"&#10;        },&#10;        {&#10;            "dt": 1618390800,&#10;            "main": {&#10;                "temp": 0.77,&#10;                "feels_like": -3.48,&#10;                "temp_min": 0.77,&#10;                "temp_max": 0.77,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 980,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.22,&#10;                "deg": 314&#10;            },&#10;            "visibility": 26,&#10;            "pop": 1,&#10;            "snow": {&#10;                "3h": 3.3&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-14 09:00:00"&#10;        },&#10;        {&#10;            "dt": 1618401600,&#10;            "main": {&#10;                "temp": 0.38,&#10;                "feels_like": -4.15,&#10;                "temp_min": 0.38,&#10;                "temp_max": 0.38,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 981,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.51,&#10;                "deg": 315&#10;            },&#10;            "visibility": 42,&#10;            "pop": 1,&#10;            "snow": {&#10;                "3h": 3.42&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-14 12:00:00"&#10;        },&#10;        {&#10;            "dt": 1618412400,&#10;            "main": {&#10;                "temp": 0.37,&#10;                "feels_like": -4.17,&#10;                "temp_min": 0.37,&#10;                "temp_max": 0.37,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 981,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.53,&#10;                "deg": 305&#10;            },&#10;            "visibility": 28,&#10;            "pop": 1,&#10;            "snow": {&#10;                "3h": 2.32&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-14 15:00:00"&#10;        },&#10;        {&#10;            "dt": 1618423200,&#10;            "main": {&#10;                "temp": 0.17,&#10;                "feels_like": -4.31,&#10;                "temp_min": 0.17,&#10;                "temp_max": 0.17,&#10;                "pressure": 1017,&#10;                "sea_level": 1017,&#10;                "grnd_level": 981,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.36,&#10;                "deg": 296&#10;            },&#10;            "visibility": 23,&#10;            "pop": 1,&#10;            "snow": {&#10;                "3h": 1.28&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-14 18:00:00"&#10;        },&#10;        {&#10;            "dt": 1618434000,&#10;            "main": {&#10;                "temp": 0.24,&#10;                "feels_like": -4.08,&#10;                "temp_min": 0.24,&#10;                "temp_max": 0.24,&#10;                "pressure": 1017,&#10;                "sea_level": 1017,&#10;                "grnd_level": 981,&#10;                "humidity": 98,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.14,&#10;                "deg": 292&#10;            },&#10;            "visibility": 24,&#10;            "pop": 0.43,&#10;            "snow": {&#10;                "3h": 0.27&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-14 21:00:00"&#10;        },&#10;        {&#10;            "dt": 1618444800,&#10;            "main": {&#10;                "temp": 0.2,&#10;                "feels_like": -4.04,&#10;                "temp_min": 0.2,&#10;                "temp_max": 0.2,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 981,&#10;                "humidity": 98,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.01,&#10;                "deg": 287&#10;            },&#10;            "visibility": 23,&#10;            "pop": 0.49,&#10;            "snow": {&#10;                "3h": 0.34&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-15 00:00:00"&#10;        },&#10;        {&#10;            "dt": 1618455600,&#10;            "main": {&#10;                "temp": 0.21,&#10;                "feels_like": -4.2,&#10;                "temp_min": 0.21,&#10;                "temp_max": 0.21,&#10;                "pressure": 1016,&#10;                "sea_level": 1016,&#10;                "grnd_level": 981,&#10;                "humidity": 98,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.26,&#10;                "deg": 282&#10;            },&#10;            "visibility": 23,&#10;            "pop": 0.73,&#10;            "snow": {&#10;                "3h": 0.29&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-15 03:00:00"&#10;        },&#10;        {&#10;            "dt": 1618466400,&#10;            "main": {&#10;                "temp": 0.35,&#10;                "feels_like": -3.91,&#10;                "temp_min": 0.35,&#10;                "temp_max": 0.35,&#10;                "pressure": 1017,&#10;                "sea_level": 1017,&#10;                "grnd_level": 981,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.08,&#10;                "deg": 278&#10;            },&#10;            "visibility": 25,&#10;            "pop": 0.41,&#10;            "snow": {&#10;                "3h": 0.13&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-15 06:00:00"&#10;        },&#10;        {&#10;            "dt": 1618477200,&#10;            "main": {&#10;                "temp": 0.6,&#10;                "feels_like": -3.78,&#10;                "temp_min": 0.6,&#10;                "temp_max": 0.6,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 982,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.35,&#10;                "deg": 278&#10;            },&#10;            "visibility": 23,&#10;            "pop": 0.47,&#10;            "snow": {&#10;                "3h": 0.18&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-15 09:00:00"&#10;        },&#10;        {&#10;            "dt": 1618488000,&#10;            "main": {&#10;                "temp": 0.9,&#10;                "feels_like": -3.46,&#10;                "temp_min": 0.9,&#10;                "temp_max": 0.9,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 983,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.44,&#10;                "deg": 282&#10;            },&#10;            "visibility": 24,&#10;            "pop": 0.47,&#10;            "snow": {&#10;                "3h": 0.18&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-15 12:00:00"&#10;        },&#10;        {&#10;            "dt": 1618498800,&#10;            "main": {&#10;                "temp": 0.76,&#10;                "feels_like": -4.11,&#10;                "temp_min": 0.76,&#10;                "temp_max": 0.76,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 982,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 600,&#10;                    "main": "Snow",&#10;                    "description": "light snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 5.27,&#10;                "deg": 288&#10;            },&#10;            "visibility": 23,&#10;            "pop": 0.55,&#10;            "snow": {&#10;                "3h": 0.68&#10;            },&#10;            "sys": {&#10;                "pod": "d"&#10;            },&#10;            "dt_txt": "2021-04-15 15:00:00"&#10;        },&#10;        {&#10;            "dt": 1618509600,&#10;            "main": {&#10;                "temp": 0.45,&#10;                "feels_like": -4.34,&#10;                "temp_min": 0.45,&#10;                "temp_max": 0.45,&#10;                "pressure": 1018,&#10;                "sea_level": 1018,&#10;                "grnd_level": 983,&#10;                "humidity": 99,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 4.97,&#10;                "deg": 285&#10;            },&#10;            "visibility": 22,&#10;            "pop": 0.95,&#10;            "snow": {&#10;                "3h": 2.11&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-15 18:00:00"&#10;        },&#10;        {&#10;            "dt": 1618520400,&#10;            "main": {&#10;                "temp": 0.29,&#10;                "feels_like": -5.13,&#10;                "temp_min": 0.29,&#10;                "temp_max": 0.29,&#10;                "pressure": 1017,&#10;                "sea_level": 1017,&#10;                "grnd_level": 982,&#10;                "humidity": 98,&#10;                "temp_kf": 0&#10;            },&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13n"&#10;                }&#10;            ],&#10;            "clouds": {&#10;                "all": 100&#10;            },&#10;            "wind": {&#10;                "speed": 6.1,&#10;                "deg": 281&#10;            },&#10;            "visibility": 31,&#10;            "pop": 1,&#10;            "snow": {&#10;                "3h": 1.86&#10;            },&#10;            "sys": {&#10;                "pod": "n"&#10;            },&#10;            "dt_txt": "2021-04-15 21:00:00"&#10;        }&#10;    ],&#10;    "city": {&#10;        "id": 702550,&#10;        "name": "Lviv",&#10;        "coord": {&#10;            "lat": 49.8383,&#10;            "lon": 24.0232&#10;        },&#10;        "country": "UA",&#10;        "population": 15000,&#10;        "timezone": 10800,&#10;        "sunrise": 1618284908,&#10;        "sunset": 1618333996&#10;    }&#10;}&#10;]' mediaType="application/java" encoding="UTF-8" />
+			</munit-tools:then-return>
+		</munit-tools:mock-when>
+	</flow>
+	<flow name="mock_request_forecast_16_days" doc:id="90bb79ae-1662-4b25-b87b-626647a39835" >
+		<munit-tools:mock-when doc:name="Mock when" doc:id="87632948-592c-4b7e-8102-6b87dab25eab" processor="http:request">
+			<munit-tools:with-attributes >
+				<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+				<munit-tools:with-attribute whereValue="GET/rapidapi.com/forecast/daily" attributeName="doc:name" />
+				<munit-tools:with-attribute whereValue="32df515c-3f7c-4855-b606-889cbcdca1df" attributeName="doc:id" />
+				<munit-tools:with-attribute whereValue="/forecast/daily" attributeName="path" />
+				<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+			</munit-tools:with-attributes>
+			<munit-tools:then-return >
+				<munit-tools:payload value='#[&#10;{&#10;    "city": {&#10;        "id": 702550,&#10;        "name": "Lviv",&#10;        "coord": {&#10;            "lon": 24.0232,&#10;            "lat": 49.8383&#10;        },&#10;        "country": "UA",&#10;        "population": 15000,&#10;        "timezone": 10800&#10;    },&#10;    "cod": "200",&#10;    "message": 0.0689127,&#10;    "cnt": 7,&#10;    "list": [&#10;        {&#10;            "dt": 1618308000,&#10;            "sunrise": 1618284908,&#10;            "sunset": 1618333996,&#10;            "temp": {&#10;                "day": 6.68,&#10;                "min": 3.24,&#10;                "max": 11.86,&#10;                "night": 3.24,&#10;                "eve": 4.01,&#10;                "morn": 8.56&#10;            },&#10;            "feels_like": {&#10;                "day": 3.14,&#10;                "night": 5.65,&#10;                "eve": 0.37,&#10;                "morn": 5.65&#10;            },&#10;            "pressure": 1020,&#10;            "humidity": 81,&#10;            "weather": [&#10;                {&#10;                    "id": 804,&#10;                    "main": "Clouds",&#10;                    "description": "overcast clouds",&#10;                    "icon": "04d"&#10;                }&#10;            ],&#10;            "speed": 5.7,&#10;            "deg": 301,&#10;            "clouds": 100,&#10;            "pop": 0.44&#10;        },&#10;        {&#10;            "dt": 1618394400,&#10;            "sunrise": 1618371184,&#10;            "sunset": 1618420490,&#10;            "temp": {&#10;                "day": 0.51,&#10;                "min": 0.17,&#10;                "max": 2.88,&#10;                "night": 0.21,&#10;                "eve": 0.27,&#10;                "morn": 1.72&#10;            },&#10;            "feels_like": {&#10;                "day": -3.97,&#10;                "night": -1.85,&#10;                "eve": -4.22,&#10;                "morn": -1.85&#10;            },&#10;            "pressure": 1016,&#10;            "humidity": 99,&#10;            "weather": [&#10;                {&#10;                    "id": 616,&#10;                    "main": "Snow",&#10;                    "description": "rain and snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "speed": 4.48,&#10;            "deg": 315,&#10;            "clouds": 100,&#10;            "pop": 1,&#10;            "rain": 2.86,&#10;            "snow": 11.91&#10;        },&#10;        {&#10;            "dt": 1618480800,&#10;            "sunrise": 1618457462,&#10;            "sunset": 1618506983,&#10;            "temp": {&#10;                "day": 0.6,&#10;                "min": 0.18,&#10;                "max": 0.9,&#10;                "night": 0.45,&#10;                "eve": 0.76,&#10;                "morn": 0.19&#10;            },&#10;            "feels_like": {&#10;                "day": -3.78,&#10;                "night": -4.13,&#10;                "eve": -4.11,&#10;                "morn": -4.13&#10;            },&#10;            "pressure": 1018,&#10;            "humidity": 99,&#10;            "weather": [&#10;                {&#10;                    "id": 601,&#10;                    "main": "Snow",&#10;                    "description": "snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "speed": 4.35,&#10;            "deg": 278,&#10;            "clouds": 100,&#10;            "pop": 0.95,&#10;            "snow": 3.7&#10;        },&#10;        {&#10;            "dt": 1618567200,&#10;            "sunrise": 1618543740,&#10;            "sunset": 1618593477,&#10;            "temp": {&#10;                "day": 0.64,&#10;                "min": 0.23,&#10;                "max": 1.28,&#10;                "night": 1.28,&#10;                "eve": 1.18,&#10;                "morn": 0.32&#10;            },&#10;            "feels_like": {&#10;                "day": -5.1,&#10;                "night": -5.37,&#10;                "eve": -4.16,&#10;                "morn": -5.37&#10;            },&#10;            "pressure": 1017,&#10;            "humidity": 99,&#10;            "weather": [&#10;                {&#10;                    "id": 616,&#10;                    "main": "Snow",&#10;                    "description": "rain and snow",&#10;                    "icon": "13d"&#10;                }&#10;            ],&#10;            "speed": 7.02,&#10;            "deg": 281,&#10;            "clouds": 100,&#10;            "pop": 1,&#10;            "rain": 7.05,&#10;            "snow": 1.86&#10;        },&#10;        {&#10;            "dt": 1618653600,&#10;            "sunrise": 1618630019,&#10;            "sunset": 1618679970,&#10;            "temp": {&#10;                "day": 2.17,&#10;                "min": 1.08,&#10;                "max": 3.98,&#10;                "night": 2.69,&#10;                "eve": 3.98,&#10;                "morn": 1.16&#10;            },&#10;            "feels_like": {&#10;                "day": -0.46,&#10;                "night": -3.09,&#10;                "eve": 3.98,&#10;                "morn": -3.09&#10;            },&#10;            "pressure": 1019,&#10;            "humidity": 99,&#10;            "weather": [&#10;                {&#10;                    "id": 500,&#10;                    "main": "Rain",&#10;                    "description": "light rain",&#10;                    "icon": "10d"&#10;                }&#10;            ],&#10;            "speed": 2.51,&#10;            "deg": 259,&#10;            "clouds": 100,&#10;            "pop": 0.86,&#10;            "rain": 1.83&#10;        },&#10;        {&#10;            "dt": 1618740000,&#10;            "sunrise": 1618716299,&#10;            "sunset": 1618766463,&#10;            "temp": {&#10;                "day": 5.41,&#10;                "min": 1.64,&#10;                "max": 7.38,&#10;                "night": 5.76,&#10;                "eve": 6.93,&#10;                "morn": 1.64&#10;            },&#10;            "feels_like": {&#10;                "day": 2.06,&#10;                "night": -0.6,&#10;                "eve": 3.75,&#10;                "morn": -0.6&#10;            },&#10;            "pressure": 1020,&#10;            "humidity": 92,&#10;            "weather": [&#10;                {&#10;                    "id": 500,&#10;                    "main": "Rain",&#10;                    "description": "light rain",&#10;                    "icon": "10d"&#10;                }&#10;            ],&#10;            "speed": 4.57,&#10;            "deg": 106,&#10;            "clouds": 100,&#10;            "pop": 1,&#10;            "rain": 3.2&#10;        },&#10;        {&#10;            "dt": 1618826400,&#10;            "sunrise": 1618802580,&#10;            "sunset": 1618852957,&#10;            "temp": {&#10;                "day": 7.36,&#10;                "min": 5.74,&#10;                "max": 7.95,&#10;                "night": 7.95,&#10;                "eve": 7.73,&#10;                "morn": 5.86&#10;            },&#10;            "feels_like": {&#10;                "day": 3.79,&#10;                "night": 3.44,&#10;                "eve": 3.86,&#10;                "morn": 3.44&#10;            },&#10;            "pressure": 1018,&#10;            "humidity": 92,&#10;            "weather": [&#10;                {&#10;                    "id": 500,&#10;                    "main": "Rain",&#10;                    "description": "light rain",&#10;                    "icon": "10d"&#10;                }&#10;            ],&#10;            "speed": 6.29,&#10;            "deg": 100,&#10;            "clouds": 100,&#10;            "pop": 0.64,&#10;            "rain": 1.81&#10;        }&#10;    ]&#10;}&#10;]' mediaType="application/java" encoding="UTF-8" />
+			</munit-tools:then-return>
+		</munit-tools:mock-when>
+	</flow>
+	<flow name="setEventFlow" doc:id="0ea50bc4-7680-4ce7-aae1-353803888ade" >
+		<munit:set-event doc:name="Set Event" doc:id="227c6597-11c8-42da-9ba7-cc05ddf7b32a" >
+			<munit:attributes value='#[&#10;output application/json&#10;---&#10;{queryParams:{nextLocation:"Lviv, Ukraine",period:7}}&#10;]' encoding="UTF-8" mediaType="application/json" />
+		</munit:set-event>
+	</flow>
+	<flow name="setEvent_for_short_forecast_flow" doc:id="aabd1928-88c5-47f6-86d6-6993b012c921" >
+		<munit:set-event doc:name="Set Event" doc:id="58898ce5-f9bd-4f79-8d77-bac9c3de4bf6" >
+			<munit:attributes value='#[&#10;output application/json&#10;---&#10;{queryParams:{nextLocation:"Lviv, Ukraine",period:2,interval:"6_hours"}}&#10;]' encoding="UTF-8" mediaType="application/json" />
+		</munit:set-event>
+	</flow>
+	<flow name="setEventWithUnexistingCity" doc:id="55498ca3-cca4-4116-9db0-4e5862329b0f" >
+		<munit:set-event doc:name="Set Event" doc:id="1e6c277e-aeb4-4970-b380-c5ab712dea9f" >
+			<munit:attributes value='#[&#10;output application/json&#10;---&#10;{queryParams:{nextLocation:"unexisting city",period:7}}&#10;]' />
+		</munit:set-event>
+	</flow>
+	<flow name="setEvent_For_Unexistinng_City_Short_Forecast" doc:id="5fd44363-382b-4f66-be38-d8f2dc6fc6d3" >
+		<munit:set-event doc:name="Set Event" doc:id="e9c76b07-4216-45d7-95e9-2526464b0fff" >
+			<munit:attributes value='#[&#10;output application/json&#10;---&#10;{queryParams:{nextLocation:"Lviv, Ukraine",period:2}}&#10;]' />
+		</munit:set-event>
+	</flow>
+	<munit:test name="GET-weather_Test_Is_application_json" doc:id="882d866c-8e38-492e-bfe2-e874a6d61313" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_weather" doc:id="350b6e1a-f2d1-4569-ac22-2d3484095b6d" name="mock_request_weather"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="5dcfed1a-f247-4e6e-9de1-4b3d697cd9b2" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\weather:weather-info-api-config" doc:id="e10a1a58-bff6-4880-b02a-6ebbb6d4e0d1" name="get:\weather:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is application/json" doc:id="ab1bd4f4-7ec1-4bac-91af-c085343b4723" is="#[MunitTools::withMediaType('application/json')]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-weather_Test_Is_object" doc:id="ef024962-534d-46bf-882b-30dbe2830d26" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_weather" doc:id="3a215437-46bd-4f97-a87f-1b322c63dede" name="mock_request_weather"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="8c41b1d8-ce5a-4fba-af7e-06e04b579fa2" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\weather:weather-info-api-config" doc:id="d4342ce3-b724-45f2-8d50-8807dfa3262e" name="get:\weather:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Is object" doc:id="59ecfe90-940c-4bea-97ec-19c3c2e87c16" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts     
+ --- 
+payload must beObject()]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-weather_Test_Has_required_properties" doc:id="9e3b874c-6667-45ef-b936-b5633e47a042" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_weather" doc:id="dae7546f-a34c-4222-b784-b474ec330c8b" name="mock_request_weather"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="ad32c728-3446-44b3-acc5-41972e24b984" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\weather:weather-info-api-config" doc:id="bee4ad10-fc3a-4026-ab05-addc7221f490" name="get:\weather:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Has required properties" doc:id="0f70a8d5-3556-4e39-a15c-d08b0bca71cb" is="#[MunitTools::equalTo(true)]" expression='#[var expectedProperties=["id","location","date","timezone","description","temperature","feels_like","min_temperature","max_temperature","pressure","humidity","wind_speed","clouds","sunrise","sunset"]&#10;var actualProperties=keysOf(payload)&#10;---&#10;if(sizeOf(actualProperties)==sizeOf(expectedProperties))&#10;  sizeOf((expectedProperties map (property,index)-&gt;&#10;    if (!(actualProperties[index]~=property)) &#10;      property&#10;    else true) filter($!=true))==0&#10;else&#10;  "Sizes of arrays of actual and expected properties are not equal"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_long_period_Test_Is_not_null" doc:id="c2e7bcca-0ee9-4a49-a286-8105051f8fc9" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecast_16_days" doc:id="53321c33-2387-4452-9a67-848c2a600999" name="mock_request_forecast_16_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="89b0c8f8-d3cf-4ca5-9f1e-46715dad25b5" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="f8789154-6351-4344-9afd-2523a9e1edf6" name="get:\forecast:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is not null" doc:id="b259d1a2-e729-4e88-87d9-f02246f885ce" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-weather_with_wrong_city_Test" doc:id="dd807a6d-0f84-4473-8942-2f0e65988e69" ignore="true">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecast_16_days" doc:id="1a1df76d-e2f8-47f4-a190-80b103786d33" name="mock_request_forecast_16_days"/>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow Reference" doc:id="845606ad-2012-4f03-b635-f4e12b9b7b5b" name="setEventWithUnexistingCity" />
+			<flow-ref doc:name="Flow Reference" doc:id="742dbdd3-7f6c-45e2-8eed-3614984a8e5d" name="get:\weather:weather-info-api-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:fail doc:name="Fail" doc:id="5104f336-c712-48f4-a790-c3aee603c6f1" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_long_period_Test_Is_application_json" doc:id="d3af116a-ece4-41ba-84b2-668fc735ed17" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecast_16_days" doc:id="1f322f88-6ce9-4712-acd9-ec339af13b77" name="mock_request_forecast_16_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="6771e286-3864-436a-aefe-60abd935469b" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="e34e47a7-81e8-465e-b390-a2f679d58e2c" name="get:\forecast:weather-info-api-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is application/json" doc:id="23ef53a4-2549-426d-9593-65c7a75a01ba" expression="#[payload]" is='#[MunitTools::withMediaType("application/json")]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_long_period_Test_Is_object" doc:id="4a81c786-c8fa-406a-b76f-7ee63c5177e6" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecast_16_days" doc:id="9c6fc878-fe44-4554-83a6-db1a51468893" name="mock_request_forecast_16_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="2cd4ec8f-3502-4cf5-b112-eae549a02ed5" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="2652b28b-a3ad-4252-adaa-5717a69b3a37" name="get:\forecast:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Is object" doc:id="74092506-f0b3-4f6b-ac68-227251067e83" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must beObject()]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_long_period_Test_has_required_properties" doc:id="3cf1f202-bfc7-42c0-ab13-a2edd2d56146" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecast_16_days" doc:id="7b2575d6-2692-4201-b4b7-92ed40b36623" name="mock_request_forecast_16_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent" doc:id="c0198db5-7787-4b89-b5f7-475b32d752e1" name="setEventFlow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="f07608f7-91c1-424f-9b76-8c0e3ef8929a" name="get:\forecast:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Has required properties" doc:id="62a930cd-e52e-4433-b568-a837511ffa8d" is="#[MunitTools::equalTo(true)]" expression='#[var expectedProperties=["location","timezone","forecasts"]&#10;var actualProperties=keysOf(payload)&#10;---&#10;if(sizeOf(actualProperties)==sizeOf(expectedProperties))&#10;  sizeOf((expectedProperties map (property,index)-&gt;&#10;    if (!(actualProperties[index]~=property)) &#10;      property&#10;    else true) filter($!=true))==0&#10;else   &#10;  "Sizes of arrays of actual and expected properties are not equal"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_short_period_Test_Is_not_null" doc:id="12a995e8-5d5a-4d4f-bef0-c56e40b9bb29" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecst_5_days" doc:id="b8be0702-4fb9-4e0d-bb95-5790e10874a4" name="mock_request_forecst_5_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent_for_short_forecast_flow" doc:id="b9ec89cd-f23f-4738-a494-c5d801afd169" name="setEvent_for_short_forecast_flow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="1f5d48ff-00ed-4025-adec-3c72491c3655" name="get:\forecast:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is not null" doc:id="854ff65b-b912-4191-861d-fe95dda5aeee" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_short_period_Test_Is_application_json" doc:id="f3bf0db4-e532-4208-8b03-592d5709f53f" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecst_5_days" doc:id="d6d7b4a9-e2c3-4583-b8d0-beda95a7ebd7" name="mock_request_forecst_5_days"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="setEvent_for_short_forecast_flow" doc:id="ace8c533-ea58-4350-bb18-28270cbf0124" name="setEvent_for_short_forecast_flow"/>
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="ff4da000-443a-4571-b062-b6947e5e231f" name="get:\forecast:weather-info-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Is application/json" doc:id="913f388b-ac8e-4fcd-9632-7abf24cfb709" expression="#[payload]" is='#[MunitTools::withMediaType("application/json")]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_short_period_Test_Is_object" doc:id="ce5e96d6-1e1d-4242-925f-2ae9d277e190" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecst_5_days" doc:id="416437ee-96b5-418a-b485-f3e04c627c05" name="mock_request_forecst_5_days"/>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="setEvent_for_short_forecast_flow" doc:id="6df939f5-96da-4328-8e40-c70cb3a888f2" name="setEvent_for_short_forecast_flow" />
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="01e173d6-a33e-4ebe-b4ad-8428c700edf9" name="get:\forecast:weather-info-api-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Is object" doc:id="3504a31b-b7c4-4ce2-87c2-c51d48692346">
+				<munit-tools:that><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must beObject()]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="GET-forecast_for_short_period_Test_Has_required_properties" doc:id="331ff672-055b-4a4f-a4dd-7eec15064df4" description="Test">
+		<munit:behavior >
+			<flow-ref doc:name="mock_request_forecst_5_days" doc:id="28ee5869-c210-4d24-a34f-c6b30861edfe" name="mock_request_forecst_5_days"/>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="setEvent_for_short_forecast_flow" doc:id="21ed0efc-b5c9-4536-a65d-96955b4c7b2a" name="setEvent_for_short_forecast_flow" />
+			<flow-ref doc:name="Flow-ref to get:\forecast:weather-info-api-config" doc:id="0d12ff08-1528-4ef7-b812-ed9896b2a28b" name="get:\forecast:weather-info-api-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Has required properties" doc:id="2243ec58-8b1c-4f91-bc7f-24f0a3d3e253" is="#[MunitTools::equalTo(true)]" expression='#[var expectedProperties=["location","sunrise","sunset","timezone","forecasts"]&#10;var actualProperties=keysOf(payload)&#10;---&#10;if(sizeOf(actualProperties)==sizeOf(expectedProperties))&#10;  sizeOf((expectedProperties map (property,index)-&gt;&#10;    if (!(actualProperties[index]~=property)) &#10;      property&#10;    else true) filter($!=true))==0&#10;else   &#10;  "Sizes of arrays of actual and expected properties are not equal"]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="weather-info-api-test-suiteTest" doc:id="08a69fb9-36b1-4063-864e-593daee83282" ignore="true">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="21782470-021b-48b9-b693-ae8cf3021650" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="GET/rapidapi.com/forecast/daily" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="32df515c-3f7c-4855-b606-889cbcdca1df" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="/forecast/daily" attributeName="path" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[{&#10;    &quot;header&quot;: &quot;Slovats'koho St, 14, L'viv, L'vivs'ka oblast, Ukraine, 79000&quot;,&#10;    &quot;query&quot;: {&#10;        &quot;destination&quot;: {&#10;            &quot;id&quot;: &quot;1384360&quot;,&#10;            &quot;value&quot;: &quot;Slovats'koho St, 14, L'viv, L'vivs'ka oblast, Ukraine, 79000&quot;,&#10;            &quot;resolvedLocation&quot;: &quot;GEO_LOCATION:Slovats'koho St, 14, L'viv, L'vivs'ka oblast, Ukraine, 79000|49.83833694458008|24.023313522338867:GEOCODE:UNKNOWN&quot;&#10;        }&#10;    },&#10;    &quot;searchResults&quot;: {&#10;        &quot;totalCount&quot;: 238,&#10;        &quot;results&quot;: [&#10;            {&#10;                &quot;id&quot;: 400986,&#10;                &quot;name&quot;: &quot;Nobilis Hotel&quot;,&#10;                &quot;starRating&quot;: 5.0,&#10;                &quot;urls&quot;: {},&#10;                &quot;address&quot;: {&#10;                    &quot;streetAddress&quot;: &quot;5 Fredra Street&quot;,&#10;                    &quot;extendedAddress&quot;: &quot;&quot;,&#10;                    &quot;locality&quot;: &quot;Lviv&quot;,&#10;                    &quot;postalCode&quot;: &quot;79005&quot;,&#10;                    &quot;region&quot;: &quot;&quot;,&#10;                    &quot;countryName&quot;: &quot;Ukraine&quot;,&#10;                    &quot;countryCode&quot;: &quot;ua&quot;,&#10;                    &quot;obfuscate&quot;: false&#10;                },&#10;                &quot;welcomeRewards&quot;: {&#10;                    &quot;collect&quot;: true&#10;                },&#10;                &quot;guestReviews&quot;: {&#10;                    &quot;unformattedRating&quot;: 4.6,&#10;                    &quot;rating&quot;: &quot;4.6&quot;,&#10;                    &quot;total&quot;: 44,&#10;                    &quot;scale&quot;: 5,&#10;                    &quot;badge&quot;: &quot;superb&quot;,&#10;                    &quot;badgeText&quot;: &quot;Superb&quot;&#10;                },&#10;                &quot;landmarks&quot;: [&#10;                    {&#10;                        &quot;label&quot;: &quot;Slovats'koho St, 14, L'viv, L'vivs'ka oblast, Ukraine, 79000&quot;,&#10;                        &quot;distance&quot;: &quot;0.5 miles&quot;&#10;                    },&#10;                    {&#10;                        &quot;label&quot;: &quot;Lviv&quot;,&#10;                        &quot;distance&quot;: &quot;0.4 miles&quot;&#10;                    }&#10;                ],&#10;                &quot;geoBullets&quot;: [],&#10;                &quot;ratePlan&quot;: {&#10;                    &quot;price&quot;: {&#10;                        &quot;current&quot;: &quot;90&quot;,&#10;                        &quot;exactCurrent&quot;: 90.17,&#10;                        &quot;old&quot;: &quot;100&quot;&#10;                    },&#10;                    &quot;features&quot;: {&#10;                        &quot;freeCancellation&quot;: false,&#10;                        &quot;paymentPreference&quot;: true,&#10;                        &quot;noCCRequired&quot;: true&#10;                    },&#10;                    &quot;type&quot;: &quot;Dual&quot;&#10;                },&#10;                &quot;neighbourhood&quot;: &quot;Lviv City Center&quot;,&#10;                &quot;deals&quot;: {&#10;                    &quot;secretPrice&quot;: {&#10;                        &quot;dealText&quot;: &quot;Save more with Secret Prices&quot;&#10;                    },&#10;                    &quot;priceReasoning&quot;: &quot;DRR-443&quot;&#10;                },&#10;                &quot;messaging&quot;: {&#10;                    &quot;scarcity&quot;: &quot;4 left on our app&quot;&#10;                },&#10;                &quot;badging&quot;: {},&#10;                &quot;pimmsAttributes&quot;: &quot;DoubleStamps|D13|TESCO&quot;,&#10;                &quot;coordinate&quot;: {&#10;                    &quot;lat&quot;: 49.83619,&#10;                    &quot;lon&quot;: 24.03296&#10;                },&#10;                &quot;roomsLeft&quot;: 4,&#10;                &quot;providerType&quot;: &quot;LOCAL&quot;,&#10;                &quot;supplierHotelId&quot;: 4818553,&#10;                &quot;isAlternative&quot;: false,&#10;                &quot;optimizedThumbUrls&quot;: {&#10;                    &quot;srpDesktop&quot;: &quot;https://thumbnails.trvl-media.com/5IK8D24OUt0T8cfbbH1sLJRhK7g=/250x140/smart/filters:quality(60)/images.trvl-media.com/hotels/5000000/4820000/4818600/4818553/2b9d58ce_z.jpg&quot;&#10;                }&#10;            }&#10;]}}]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<ee:transform doc:name="Transform Message" doc:id="4afee5a9-4caa-4948-ae6a-14e19eb15a74" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					<ee:set-attributes ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams:{nextLocation:"Lviv"}
+}]]></ee:set-attributes>
+				</ee:message>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference" doc:id="6ce7e122-a65a-4187-8b7a-a05a6c994532" name="forecast-subflow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="8159b55b-f767-479a-a88e-40b9da6cfb3a" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

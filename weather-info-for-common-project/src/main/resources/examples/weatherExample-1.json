@@ -1,0 +1,17 @@
+{
+  id: 1,
+  location: "Lviv, Ukraine",
+  date: "2021-04-12",
+  timezone: "+03:00:00Z",
+  description: "clear sky",
+  temperature: 15,
+  feels_like: 13,
+  min_temperature: 8,
+  max_temperature: 20,
+  pressure: 1017,
+  humidity: 44,
+  wind_speed: 1,
+  clouds: 0,
+  sunrise: "06:34:00",
+  sunset: "20:14:00"
+}

@@ -1,0 +1,6 @@
+http:
+  port: "8081"
+  
+request:
+  host: "community-open-weather-map.p.rapidapi.com"
+  port: "443"

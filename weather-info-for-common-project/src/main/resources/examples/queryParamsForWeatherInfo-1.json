@@ -1,0 +1,8 @@
+{
+queryParams:
+  {
+    period: 1,
+    nextLocation:"Lviv, Ukraine",
+    interval:"daily"
+  }
+}
