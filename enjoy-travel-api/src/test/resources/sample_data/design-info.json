@@ -1,0 +1,39 @@
+{
+  "sampleData": {
+    "7e9d5dd1-ccc3-42ac-8f61-a9d6eb2e7e20": {
+      "payload": "sample_data/java_2.dwl"
+    },
+    "a20c3915-59f3-46f8-aefa-b7261fccd53d": {
+      "payload": "sample_data/java_1.dwl"
+    },
+    "3885dbe3-54a8-4e1a-8142-1e28dfbef96f": {
+      "payload": "sample_data/java.dwl"
+    },
+    "2a9ca2b0-7d51-4dce-8b56-9563ef4f1712": {
+      "payload": "sample_data/json.json"
+    },
+    "fa83e393-abf3-4b20-94c1-eb2997c5a719": {
+      "payload": "sample_data/java_3.dwl"
+    },
+    "407b9916-185e-4836-a804-21ea34d6dc27": {
+      "payload": "sample_data/java_4.dwl"
+    },
+    "7f87536a-9b75-42c1-9bcc-a8174b06d500": {
+      "payload": "sample_data/java_5.dwl"
+    },
+    "12892434-c8ef-4db9-94e6-edc9ab12f02e": {
+      "payload": "sample_data/java_6.dwl",
+      "vars-currencyName": "sample_data/json_3.json",
+      "vars-currencyRate": "sample_data/json_4.json"
+    },
+    "cffb51cc-f150-4cf7-aa2a-0f9f13f0aa14": {
+      "payload": "sample_data/json_1.json"
+    },
+    "d8af513d-5a99-47b9-8c44-a05d89ae91bb": {
+      "payload": "sample_data/json_2.json"
+    },
+    "e1911b0b-91be-4be1-9795-aea42301f387": {
+      "attributes": "sample_data/httpresponseattributes.dwl"
+    }
+  }
+}

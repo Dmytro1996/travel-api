@@ -1,0 +1,73 @@
+{
+    "names": {
+        "name": "Netherlands",
+        "full": "Kingdom of the Netherlands",
+        "iso2": "NL",
+        "continent": "EU"
+    },
+    "timezone": {
+        "name": "Europe/Amsterdam"
+    },
+    "language": [
+        {
+            "language": "Dutch",
+            "official": "Yes"
+        }
+    ],
+    "electricity": {
+        "voltage": "230",
+        "frequency": "50",
+        "plugs": [
+            "C",
+            "F"
+        ]
+    },
+    "telephone": {
+        "calling_code": "31",
+        "police": "112",
+        "ambulance": "112",
+        "fire": "112"
+    },
+    "water": {
+        "short": "safe"
+    },
+    "vaccinations": [],
+    "currency": {
+        "name": "Euro",
+        "code": "EUR"
+    },
+    "neighbors": [
+        {
+            "name": "Belgium"
+        },
+        {
+            "name": "Luxembourg"
+        },
+        {
+            "name": "Germany"
+        },
+        {
+            "name": "Switzerland"
+        },
+        {
+            "name": "France"
+        }
+    ],
+    "advise": {
+        "UA": {
+            "advise": "Exercise normal safety precautions",
+            "url": "http://www.smartraveller.gov.au/zw-cgi/view/Advice/Netherlands"
+        },
+        "CA": {
+            "advise": "<!-- START adv-netherlands -->Avoid non-essential travel<!-- END adv-netherlands -->",
+            "url": "http://travel.gc.ca/destinations/netherlands"
+        }
+    },
+    "situation": {
+        "sources": 9,
+        "rating": "4.0",
+        "updated": "2021-04-22 08:34:22",
+        "final_advice": "Please reconsider your need to travel to Ukraine.",
+        "url_details": "https://www.reisewarnung.net/en/ukraine"
+    }    
+}

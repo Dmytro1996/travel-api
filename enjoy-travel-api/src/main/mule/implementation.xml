@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	
+	<flow name="getCountryInfoFlow" doc:id="6394fe9f-2f0e-4f6b-aaf9-792527f4dc46">
+		<set-variable value="#[attributes.uriParams.country]" doc:name="myCountry" doc:id="157a83bd-112c-4335-a25a-972d9af70db3" variableName="myCountry"/>
+		<scatter-gather doc:name="initialize" doc:id="64a6e34a-2fb1-49eb-88e2-f8a76ed16791">
+			<route>
+				<flow-ref doc:name="travelbriefing_flow" doc:id="ea7f9e9e-c780-448a-adb9-4dc565deb2a9" name="travelbriefingSubFlow" />
+			</route>
+			<route>
+				<flow-ref doc:name="travelbriefing_flow" doc:id="b3cd7ee0-f137-4d77-9af3-9774606741b1" name="travelbriefingSubFlow" />
+				<flow-ref doc:name="reisewarnung_flow" doc:id="2fde8335-5b8f-4124-b2d4-428c2edea05b" name="reisewarnungSubFlow" />
+			</route>
+			<route>
+				<flow-ref doc:name="homecountry_flow" doc:id="59fc96ba-f737-44d6-ba8f-259b8a95f30c" name="travelbriefingHomeSubFlow" />
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="output_info" doc:id="12892434-c8ef-4db9-94e6-edc9ab12f02e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+---
+{	
+	names: {
+		name: payload."0".payload.names.name default "",
+		full: payload."0".payload.names.full default "",
+		iso2: payload."0".payload.names.iso2 default "",
+		iso3: payload."0".payload.names.iso3 default "",
+		continent: payload."0".payload.names.continent default "",
+		continent_info: payload."1".payload.situation.continent_info default "",
+	},
+	timezone: {
+		name: payload."0".payload.timezone.name default ""
+	},
+	currency: {
+		name: payload."0".payload.currency.name default "",
+		code: payload."0".payload.currency.code default "",
+		rate: payload."0".payload.currency.rate default "",
+		compare: {
+			name: vars.currencyName default "",
+			rate: vars.currencyRate default ""		
+		}	
+		},
+	language: payload."0".payload.language map ( language , indexOfLanguage ) -> {
+		language: language.language default "",
+		official: language.official default ""
+	},				
+	telephone: {
+		calling_code: payload."0".payload.telephone.calling_code default "",
+		police: payload."0".payload.telephone.police default "",
+		fire: payload."0".payload.telephone.fire default "",
+		ambulance: payload."0".payload.telephone.ambulance default ""
+	},
+	electricity: {
+		voltage: payload."0".payload.electricity.voltage default "",
+		frequency: payload."0".payload.electricity.frequency default "",
+		plugs: payload."0".payload.electricity.plugs map ( plug , indexOfPlug ) -> plug default ""
+	},
+	water: {
+		short: payload."0".payload.water.short default ""
+	},
+	vaccinations: payload."0".payload.vaccinations map ( vaccination , indexOfVaccination ) -> {
+		name: vaccination.name default "",
+		message: vaccination.message default ""
+	},
+	advice: {
+		AU: {
+			advice: payload."0".payload.advice.AU.advice default "",
+			url: payload."0".payload.advice.AU.url default ""
+		},
+		CA: {
+			advice: payload."0".payload.advice.CA.advice default "",
+			url: payload."0".payload.advice.CA.url default ""
+		},
+		situation: {
+		sources: payload."1".payload.situation.sources default "",
+		rating: payload."1".payload.situation.rating default "",
+		updated: payload."1".payload.situation.updated default "",
+		final_advice: payload."1".payload.situation.final_advice default "",
+		url_details: payload."1".payload.situation.url_details default ""
+		}
+	},	
+	neighbours: payload."0".payload.neighbours map ( neighbor , indexOfNeighbor ) -> {
+		name: neighbor.name default "",
+		link: "http://localhost:8081/api/" ++ underscore(neighbor.name) ++ "?home_country=" ++ underscore(vars.homeCountry) default ""
+	},
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="950fad29-f953-46f4-9d61-5b7758c46a07" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="c7e7147d-4d75-4f58-9431-ba4e5006fb6c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Invalid country name."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="400" doc:name="httpStatus" doc:id="0c776989-248e-40af-a1eb-3b8ee4de9836" variableName="httpStatus"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<sub-flow name="travelbriefingHomeSubFlow" doc:id="d719ffc5-a40d-42ef-a53f-6c560bea09ec" >
+		<http:request method="GET" doc:name="travelbriefing_request" doc:id="ec542444-e754-4770-856f-0543f8fba591" url="${request.travelbriefing_url}" outputMimeType="application/json">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"myCountry" : attributes.queryParams.home_country
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"country" : attributes.queryParams.home_country
+}]]]></http:uri-params>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"format" : "json"
+}]]]></http:query-params>
+		</http:request>
+		<set-variable value="#[payload.currency.name]" doc:name="currencyName" doc:id="365459d3-50fb-40de-baef-a3bd77374a87" variableName="currencyName" />
+		<set-variable value="#[payload.currency.rate]" doc:name="currencyRate" doc:id="4cf0db03-c828-48dc-81b1-d7bb5b73c4df" variableName="currencyRate" />
+		<set-variable value="#[payload.names.name]" doc:name="homeCountry" doc:id="d8502773-1f48-4049-a8e6-cd75a00f4f46" variableName="homeCountry"/>
+	</sub-flow>
+	<sub-flow name="reisewarnungSubFlow" doc:id="5f756663-7002-4d5b-8a1a-43b2acefe4e0" >
+		<http:request method="GET" doc:name="reisewarnung_request" doc:id="cffb51cc-f150-4cf7-aa2a-0f9f13f0aa14" url="${request.reisewarnung_url}" outputMimeType="application/json">
+					<http:query-params><![CDATA[#[output application/json
+---
+{
+	"country" : payload.names.'iso2'
+}]]]></http:query-params>
+				</http:request>
+		<ee:transform doc:name="reisewarnung_output" doc:id="fa83e393-abf3-4b20-94c1-eb2997c5a719">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	situation: {
+		continent_info: payload.data.lang.en.continent_info,
+		sources: payload.data.situation.sources,
+		rating: payload.data.situation.rating,
+		updated: payload.data.situation.updated,
+		final_advice: payload.data.lang.en.advice,
+		url_details: payload.data.lang.en.url_details
+	}		
+	
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+	</sub-flow>
+	<sub-flow name="travelbriefingSubFlow" doc:id="fb213ac3-0866-45bc-8686-8cd9d4d3fde3">
+		<http:request method="GET" doc:name="travelbriefing_request" doc:id="a09a42c8-5614-4031-8c18-fc95ac72d5f0" url="${request.travelbriefing_url}" outputMimeType="application/json">
+			<http:uri-params><![CDATA[#["country":attributes.uriParams.country]]]></http:uri-params>
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"format" : "json"
+}]]]></http:query-params>
+				</http:request>
+		<choice doc:name="Choice" doc:id="95a5d0b0-6d51-4638-88da-a038d47ddc69" >
+			<when expression='#[%dw 2.0&#10;import * from dw::core::Strings&#10;---&#10;underscore(payload.names.name) != underscore(vars.myCountry)]'>
+				<raise-error doc:name="Raise error" doc:id="113e0e44-2941-4e0e-b861-172cca47680f" type="ANY"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="travelbriefing_output" doc:id="2a9ca2b0-7d51-4dce-8b56-9563ef4f1712">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	names: {
+		name: payload.names.name,
+		full: payload.names.full,
+		iso2: payload.names.iso2,
+		iso3: payload.names.iso3,
+		continent: payload.names.continent
+	},
+	timezone: {
+		name: payload.timezone.name
+	},
+	language: payload.language map ( language , indexOfLanguage ) -> {
+		language: language.language,
+		official: language.official
+	},
+	currency: {
+		name: payload.currency.name,
+		code: payload.currency.code,
+		rate: payload.currency.rate,
+		compare: payload.currency.compare map ( compare , indexOfCompare ) -> {
+			name: compare.name,
+			rate: compare.rate
+		}
+	},
+	telephone: {
+		calling_code: payload.telephone.calling_code,
+		police: payload.telephone.police,
+		fire: payload.telephone.fire,
+		ambulance: payload.telephone.ambulance
+	},
+	electricity: {
+		voltage: payload.electricity.voltage,
+		frequency: payload.electricity.frequency,
+		plugs: payload.electricity.plugs map ( plug , indexOfPlug ) -> plug
+	},
+	water: {
+		short: payload.water.short
+	},
+	vaccinations: payload.vaccinations map ( vaccination , indexOfVaccination ) -> {
+		name: vaccination.name,
+		message: vaccination.message
+	},
+	neighbours: payload.neighbors map ( neighbor , indexOfNeighbor ) -> {
+		name: neighbor.name
+	},			
+	advice: {
+		AU: {
+			advice: payload.advise.UA.advise,
+			url: payload.advise.UA.url
+		},
+		CA: {
+			advice: payload.advise.CA.advise,
+			url: payload.advise.CA.url
+		}
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>

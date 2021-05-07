@@ -1,0 +1,8 @@
+http:
+  port: "8081"
+  
+request:
+  travelbriefing_url: "https://travelbriefing.org/{country}"
+  reisewarnung_url: "https://www.reisewarnung.net/api"
+    
+  
